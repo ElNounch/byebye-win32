@@ -5,7 +5,8 @@
       "sources": [ "src/byebye.cpp" ],
       "include_dirs": [
         "<!(node -e \"require('nan')\")"
-      ]
+      ],
+	  "win_delay_load_hook": "true"
 	},
     {
       "target_name": "action_after_build",

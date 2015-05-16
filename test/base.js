@@ -12,24 +12,33 @@ test('Detection', function (t) {
 })
 
 test('CloseMainWindowsByProcess', function (t) {
-    t.timeoutAfter(10000)
+    t.timeoutAfter(30000)
     t.plan(3)
 
     var expectExit = false
-    var proc = child_process.spawn( 'mmc.exe' )
-    t.notStrictEqual( proc, undefined, "Launched 'mmc.exe'" )
+    var lastChance
+    var proc = child_process.spawn( 'notepad.exe' )
+    t.notStrictEqual( proc, undefined, "Launched 'notepad.exe'" )
     proc.on('exit', function onProcNone_Exit( code, signal ) {
+        if( lastChance ) {
+            clearTimeout( lastChance )
+        }
         if( expectExit ) {
-            t.strictEqual( signal, null, "mmc didn't caught any signal" )
+            t.strictEqual( signal, null, "'notepad.exe' didn't caught any signal" )
         } else {
-            t.fail( "Unexpected mmc exit" )
+            t.fail( "unexpected 'notepad.exe' exit" )
         }
         t.end()
     })
+    lastChance = setTimeout(function safetyKill() {
+        proc.kill('SIGKILL')
+        t.fail( "emergency kill" )
+        t.end()
+    }, 7000 )
     setTimeout(function() {
         t.doesNotThrow(function() {
             expectExit = true
             byebye_Win32Helper.CloseMainWindowsByProcess( proc )
         }, "calling CloseMainWindowsByProcess() didn't threw an exception")
-    }, 2000 );
+    }, 2000 )
 })

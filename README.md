@@ -6,7 +6,7 @@
 [![David](https://img.shields.io/david/ElNounch/byebye-win32.svg?style=plastic)](https://david-dm.org/ElNounch/byebye-win32)
 [![David dev](https://img.shields.io/david/dev/ElNounch/byebye-win32.svg?style=plastic)](https://david-dm.org/ElNounch/byebye-win32#info=devDependencies)
 
-Win32 native helper for [byebye](../byebye).
+Win32 native helper for [byebye](https://github.com/ElNounch/byebye).
 
 # license
 

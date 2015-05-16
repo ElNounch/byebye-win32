@@ -9,24 +9,32 @@ environment:
     # node.js
     - nodejs_version: 0.12
     # io.js
-#    - nodejs_version: 1
+    - iojs_version: 2
     # Previous versions
     - nodejs_version: 0.10
     - nodejs_version: 0.8
+    # Previous versions of io.js
+    - iojs_version: 1
+
 platform:
   - x64
   - x86
 
 install:
   # Install required version of Node.js/Io.js
-  - ps: Install-Product node $env:nodejs_version $env:platform
+  - ps: Install-Product node ($env:nodejs_version + $env:iojs_version) $env:platform
   # Update npm itself
-  - npm install -g npm
   - set PATH=%APPDATA%\npm;%APPVEYOR_BUILD_FOLDER%\node_modules\.bin;%PATH%
+  - npm install -g npm
+  # Make sure node-gyp version supports 'win_delay_load_hook' target flag
+  - if DEFINED iojs_version ( npm install -g TooTallNate/node-gyp )
 
 build_script:
-  - if %platform% == x64 CALL "%VS120COMNTOOLS%\..\..\VC\vcvarsall.bat" amd64
-  - if %platform% == x86 CALL "%VS120COMNTOOLS%\..\..\VC\vcvarsall.bat" amd64_x86
+  - if %platform% == x64 ( CALL "%VS120COMNTOOLS%\..\..\VC\vcvarsall.bat" amd64 )
+  - if %platform% == x86 ( CALL "%VS120COMNTOOLS%\..\..\VC\vcvarsall.bat" amd64_x86 )
+  # Io.js support
+  - npm install node-gyp-install
+  - node-gyp-install
   # Force rebuild
   - npm install --build-from-source --msvs_version=2013
 
@@ -43,7 +51,7 @@ on_success:
   - ps: |
      $env:needPublishing = "$env:APPVEYOR_REPO_COMMIT_MESSAGE\n\n$env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED" -Match "\[(?<republish>re)?publish binary\]"
      If ( "republish" -In $Matches.Keys ) { $env:needUnpublishing = "unpublish" }
-  - if %needPublishing% == True node-pre-gyp package %needUnpublishing% publish
+  - if %needPublishing% == True ( node-pre-gyp package %needUnpublishing% publish )
 
 # Caching npm parts
 cache:
