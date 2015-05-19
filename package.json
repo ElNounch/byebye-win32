@@ -1,6 +1,6 @@
 {
   "name": "byebye-win32",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Win32 helper for 'byebye'",
   "os": "win32",
   "main": "index.js",
