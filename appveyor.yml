@@ -27,7 +27,7 @@ install:
   - set PATH=%APPDATA%\npm;%APPVEYOR_BUILD_FOLDER%\node_modules\.bin;%PATH%
   - npm install -g npm
   # Make sure node-gyp version supports 'win_delay_load_hook' target flag
-  - if DEFINED iojs_version ( npm install -g TooTallNate/node-gyp )
+  - if DEFINED iojs_version ( npm install TooTallNate/node-gyp )
 
 build_script:
   - if %platform% == x64 ( CALL "%VS120COMNTOOLS%\..\..\VC\vcvarsall.bat" amd64 )
